@@ -12,8 +12,11 @@ This repository contains the work conducted by Sedevizo Kielienyu for community 
     &nbsp;&nbsp;e. time  
   
 2. **Input file (Raw data)**:
-  The raw data (mobility pattern) is generated using Crowdsensim<sup>1</sup>. Crowdsensim is a simulator used to create realistic crowdsensing and crowd-management simulation in     an urban setting of a real city map.  
-  The raw data has 
+  The raw data (mobility pattern) is generated using Crowdsensim<sup>1</sup>. Crowdsensim is a simulator used to create realistic crowdsensing and crowd-management simulation in     an urban setting of a real city map.</br> 
+  The raw data (mobility pattern) has 7 features defined by the tuple <UserID, Latitude, Longitude, Altitude, Day, Hour, Min>. The simulation was performed in two scenario of       10,000 users and 30,000 users, respectively, where Day = 1. The raw data can be found in 'Raw Data' folder. 'Raw Data' folder contains two sub-folders, each representing one       the two scenarios. The folders are labelled as 'City-Users-Day'. 
+
+3. **Output files**:
+
   
   
 
