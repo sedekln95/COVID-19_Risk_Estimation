@@ -1,5 +1,5 @@
 # COVID-19 Risk Estimation
-This repository contains the work conducted by Sedevizo Kielienyu for community risk estimation of COVID-19 under the supervision of Dr. Burak Kantarci. The project is inspired by the ubiquitous and non-dedicated nature of mobile sensors, where a suitable Mobile Crowdsensing (MCS) campaign is used to collect the mobility pattern of smart mobile device users (individuals who have opted to provide their sensory data to the MCS campaign). These individuals are called MCS participant or simply a user. Documentation of the Python codes are generated using Sphinx, and can be found under the 'Documentation' folder. The project uses CrowdSenSim <sup>1</sup>, a virtual crowdsensing environment to collect the mobility patterns of the MCS participants. Details regarding the simulation settings, clustering methods, input files and output files of the code are given below, along with the pre-requisites that is required for this project:
+This repository contains the work conducted by Sedevizo Kielienyu for community risk estimation of COVID-19 under the supervision of Dr. Burak Kantarci. The project is inspired by the ubiquitous and non-dedicated nature of mobile sensors, where a suitable Mobile Crowdsensing (MCS) campaign is used to collect the mobility pattern of smart mobile device users (individuals who have opted to provide their sensory data to the MCS campaign). These individuals are called MCS participant or simply a user. Documentation of the Python codes are generated using Sphinx, and can be found under the 'Documentation' folder. The project uses CrowdSenSim <sup>1</sup>, a virtual crowdsensing environment to collect the mobility patterns of the MCS participants. Details regarding the simulation settings, clustering methods, raw data, and output files of the code are given below, along with the pre-requisites that is required for this project:
 
 1. **Pre-requisites**:
   Programming Language: The baseline programming language is Python, which is used to create all the functions regarding the proposed COVID-19 risk estimation. For plotting the   graphs, MATLAB is used. 
@@ -34,11 +34,21 @@ This repository contains the work conducted by Sedevizo Kielienyu for community 
 <img src="images/raw_data.png" width=800>
 
 4. **Output files**:
-  All the output files are stored in the 'Output' folder. The raw data is cleaned using Microsoft Excel, where all the null values in each cell is replaced with 0. Since 'Altitude' feature is not required to determine the geo-location of a user, it can be discarded. Following a feature selection method, 'Day' feature is also discarded. The final tuple becomes <UserID, Latitude, Longitude, Hour, Min, Sec>.  
+  All the output files are stored in the 'Output' folder. The raw data is cleaned using Microsoft Excel, where all the null values in each cell is replaced with 0. Since 'Altitude' feature is not required to determine the geo-location of a user, it can be discarded. Following a feature selection method, 'Day' feature is also discarded. The final tuple becomes <UserID, Latitude, Longitude, Hour, Min, Sec>. Please read the 'Output_tuples.txt' in the 'Output' folder to get an explanation on each feature/column of the different data set. It is recommended to read the description of the output files first before reading the .txt file.  
   
-    Details of the output files:
-    &nbsp;&nbsp;&nbsp;1. UserMovementListEvents_0_'Users'.csv: This file represents the cleaned version of the raw mobility data from the result of replacing null values and feature selection. 'Users' in the file name can be either 10000 or 30000. 
-    &nbsp;&nbsp;&nbsp;2.  
+    Details of the output files:  
+    &nbsp;&nbsp;&nbsp;1. **UserMovementListEvents_0_Users.csv**: This file is the cleaned version of the raw mobility data from the result of replacing null values and feature selection. 'Users' in the file name can be either 10000 or 30000. For example; UserMovementListEvents_0_10000.csv    
+    &nbsp;&nbsp;&nbsp;2. **paris_Users_Foresight.csv**: This file contains the t% ahead mobility data following the data-processing steps. An example of the file name; paris_10k_50p.csv  
+    &nbsp;&nbsp;&nbsp;3. **tsne_Users_Foresight.csv**: This file is 2D vector resulted from the dimentionality reduction of using t-SNE<sup>2</sup>. For example; tsne_10k_50p.csv   
+    &nbsp;&nbsp;&nbsp;4. **labels_ClusterNum_Foresight_ClusteringMethod.csv**: This file contains the labels from the 2D t-SNE vector with a particular clustering algorithm. For example; labels_5_50p_em.csv (em for EM, km for k-means, hmm for HMM)
+    &nbsp;&nbsp;&nbsp;5. **contact_list_ClusterNum_Foresight_ClusteringMethod.csv**: This file contains the contact list of an instance (geo-location) of a user in a cluster from either of the three identified clustering algorithms. An example of the filename; contact_list_5_50p_em.csv  
+    &nbsp;&nbsp;&nbsp;6. **cluster_riskfactor_ClusterNum_Foresight_ClusteringMethod.csv**: This file contains the risk factor of a cluster. An example of the filename; cluster_riskfactor_5_50p_em.csv    
+    &nbsp;&nbsp;&nbsp;7. **risk_factor_ClusterNum_Foresight_ClusteringMethod.csv**: This file contains the risk factor of every instance of all users in the monitored region. An example of the file name; risk_factor_5_50p_em.csv  
+    &nbsp;&nbsp;&nbsp;8. **user_count_ClusterNum_Foresight_ClusteringMethod.csv**: This file contains the number of unique users in each cluster. An example of the file name; user_count_5_50p_em.csv  
+    &nbsp;&nbsp;&nbsp;9. **max_risk_factor_ClusterNum_Foresight_ClusteringMethod.csv**: This file contains the highest risk factor in each cluster. The highest risk factor will be the risk factor of an instance of a user who has the maximum list of participants in its contact list. An example of the file name; max_risk_factor_5_50p_em.csv  
+    &nbsp;&nbsp;&nbsp;10. **std_riskfactor_ClusterNum_Foresight_ClusteringMethod.csv**: This file contains the standard deviation of the cluster's risk factor. An example of the file name; std_riskfactor_5_50p_em.csv  
+    &nbsp;&nbsp;&nbsp;11. **merged_list_ins_cl_ClusterNum_Foresight_ClusteringMethod.csv**: This file is a merged csv file between output file 2, 4, and 5. An example of the file name; merged_list_ins_cl_5_50p_em.csv  
+    
   
   
 
