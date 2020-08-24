@@ -50,5 +50,10 @@ This repository contains the work conducted by Sedevizo Kielienyu for community 
     &nbsp;&nbsp;&nbsp;11. **merged_list_ins_cl_ClusterNum_Foresight_ClusteringMethod.csv**: This file is a merged csv file between output file 2, 4, and 5. An example of the file name; merged_list_ins_cl_5_50p_em.csv  
     &nbsp;&nbsp;&nbsp;12. **error_values.csv**: This file contains the average dependability of different number of communities for diiferent clustering methods at different foresights. The average dependability is the average of the summation of the absolute difference between the actual risk factor and the predicted risk factor for M communities/clusters.  
     &nbsp;&nbsp;&nbsp;13. **min_error_value.csv**: This file contains the the maximum dependability from the identified clustering methods at a particular foresight with M communities/clusters.   
+    
+5. **Additional Information**:
+A Google Drive link has been created to get additional output files. Apart from the Python codes, the files in this repository only represents a segment of the generated output files, but it is sufficient enough to understand the output from each Python code. The Google drive link can only be accessed by a student or a faculty of uOttawa. This authorization can be ammended by sending an email to me (skiel067@uottawa.ca) and Dr. Burak Kantarci (burak.kantarci@uottawa.ca) for an access request.  
+I hope I have provided sufficient information to help you understand the work that has been done here. If there is any question regarding the code(s), please feel free to send me an email at skiel067@uottawa.ca  
+Happy Researching!:)
   
 
