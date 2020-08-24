@@ -48,7 +48,7 @@ This repository contains the work conducted by Sedevizo Kielienyu for community 
     &nbsp;&nbsp;&nbsp;9. **max_risk_factor_ClusterNum_Foresight_ClusteringMethod.csv**: This file contains the highest risk factor in each cluster. The highest risk factor will be the risk factor of an instance of a user who has the maximum list of participants in its contact list. An example of the file name; max_risk_factor_5_50p_em.csv  
     &nbsp;&nbsp;&nbsp;10. **std_riskfactor_ClusterNum_Foresight_ClusteringMethod.csv**: This file contains the standard deviation of the cluster's risk factor. An example of the file name; std_riskfactor_5_50p_em.csv  
     &nbsp;&nbsp;&nbsp;11. **merged_list_ins_cl_ClusterNum_Foresight_ClusteringMethod.csv**: This file is a merged csv file between output file 2, 4, and 5. An example of the file name; merged_list_ins_cl_5_50p_em.csv  
-    &nbsp;&nbsp;&nbsp;12. **error_values**: This file contains the average dependability of different number of communities for diiferent clustering methods at different foresights.
-  
+    &nbsp;&nbsp;&nbsp;12. **error_values.csv**: This file contains the average dependability of different number of communities for diiferent clustering methods at different foresights. The average dependability is the average of the summation of the absolute difference between the actual risk factor and the predicted risk factor for M communities/clusters.  
+    &nbsp;&nbsp;&nbsp;13. **min_error_value.csv**: This file contains the the maximum dependability from the identified clustering methods at a particular foresight with M communities/clusters.   
   
 
