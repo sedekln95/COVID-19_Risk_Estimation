@@ -23,7 +23,7 @@ This repository contains the work conducted by Sedevizo Kielienyu for community 
   City: Paris (area: 105.4 km<sup>2</sup>  
   Selected travel time of each user: 41 mins (41 mins of travel time is selected from each user to define the travel distance, i.e., mobility pattern)  
   **Clustering parameters**  
-  Clustering method: k-means, HMM (Hidden Markov Model), EM (Expected Maximization)
+  Clustering method: k-means, HMM (Hidden Markov Model), EM (Expected Maximization)  
   Number of clusters: 5, 6, 7, 8    
   **Other parameters**  
   For estimating the risk scores of each cluster, a t% ahead mechanism is used where an estimation of future risk of a cluster is evaluated with (1-t)% of the time commitments of each user in the MCS campaign. The t% ahead mechanism is known as the 'Foresight' in this risk study.   
