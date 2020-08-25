@@ -1,6 +1,7 @@
 # COVID-19 Risk Estimation
 This repository contains the work conducted by Sedevizo Kielienyu for community risk estimation of COVID-19 under the supervision of Dr. Burak Kantarci. The project is inspired by the ubiquitous and non-dedicated nature of mobile sensors, where a suitable Mobile Crowdsensing (MCS) campaign is used to collect the mobility pattern of smart mobile device users (individuals who have opted to provide their sensory data to the MCS campaign). These individuals are called MCS participant or simply a user. Documentation of the Python codes are generated using Sphinx, and can be found under the 'Documentation/Python/\_build/html/' folder. To view the documentation, open 'index.html' in the location mentioned earlier. The project uses CrowdSenSim <sup>1</sup>, a virtual crowdsensing environment to collect the mobility patterns of the MCS participants.  
 To view the documentation into your system, you need to install 'Sphinx' as well as 'autodoc' using pip, i.e., pip install sphinx, pip install autodoc  
+
 Details regarding the simulation settings, clustering methods, raw data, and output files of the code are given below, along with the pre-requisites that is required for this project:
 
 1. **Pre-requisites**:
