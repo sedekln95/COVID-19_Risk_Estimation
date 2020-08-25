@@ -58,6 +58,10 @@ Details regarding the simulation settings, clustering methods, raw data, and out
 A Google Drive link has been created to get additional output files. Apart from the Python codes, the files in this repository only represents a segment of the generated output files, but it is sufficient enough to understand the output from each Python code. The Google drive link can only be access by a student or a faculty of uOttawa. This authorization can be ammended by sending an email to me (skiel067@uottawa.ca) and Dr. Burak Kantarci (burak.kantarci@uottawa.ca) for an access request.  
 I hope I have provided sufficient information to help you understand the work that has been done here. If there is any question regarding the code(s), please feel free to send me an email at skiel067@uottawa.ca  
 Google drive link:  
-Happy Researching!:)
+Happy Researching!:)  
+
+## References
+1. [Fiandrino, Claudio, et al. "CrowdSenSim: a simulation platform for mobile crowdsensing in realistic urban environments." IEEE Access 5 (2017): 3490-3503.]
+2. [Maaten, Laurens van der, and Geoffrey Hinton. "Visualizing data using t-SNE." Journal of machine learning research 9.Nov (2008): 2579-2605.]
   
 
