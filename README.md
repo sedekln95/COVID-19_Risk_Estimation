@@ -9,7 +9,7 @@ Details regarding the simulation settings, clustering methods, raw data, and out
   
     Python version: 3.8.4  
     MATLAB version: R2020a  
-    CrowdSenSim version: 1.2.0
+    CrowdSenSim version: 1.2.0  
     Python libraries: Here, the libraries(modules) used for this project are listed.  
     &nbsp;&nbsp;&nbsp;a. pandas  
     &nbsp;&nbsp;&nbsp;b. numpy  
