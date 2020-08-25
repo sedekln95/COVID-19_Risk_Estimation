@@ -61,7 +61,7 @@ Google drive link:
 Happy Researching!:)  
 
 ## References
-1. [Fiandrino, Claudio, et al. "CrowdSenSim: a simulation platform for mobile crowdsensing in realistic urban environments." IEEE Access 5 (2017): 3490-3503.] (http://www.cs.toronto.edu/~hinton/absps/tsnefinal.pdf)
+1. [Fiandrino, Claudio, et al. "CrowdSenSim: a simulation platform for mobile crowdsensing in realistic urban environments." IEEE Access 5 (2017): 3490-3503.](http://www.cs.toronto.edu/~hinton/absps/tsnefinal.pdf)
 2. [Maaten, Laurens van der, and Geoffrey Hinton. "Visualizing data using t-SNE." Journal of machine learning research 9.Nov (2008): 2579-2605.](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=7859284)
   
 
