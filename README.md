@@ -41,7 +41,7 @@ Details regarding the simulation settings, clustering methods, raw data, and out
   
     Details of the output files:  
     &nbsp;&nbsp;&nbsp;1. **UserMovementListEvents_0_Users.csv**: This file is the cleaned version of the raw mobility data from the result of replacing null values and feature selection. 'Users' in the file name can be either 10000 or 30000. For example; UserMovementListEvents_0_10000.csv    
-    &nbsp;&nbsp;&nbsp;2. **paris_Users_Foresight.csv**: This file contains the t% ahead mobility data following the data-processing steps. An example of the file name; paris_10k_50p.csv  
+    &nbsp;&nbsp;&nbsp;2. **paris_Users_Foresight.csv**: This file contains the t% ahead mobility data following the data-processing steps. An example of the file name; paris_10k_50p.csv. Since the selected travel time is 41 mins, the t% ahead is taken from the mobility data where all the users have the same number of mobility instances.    
     &nbsp;&nbsp;&nbsp;3. **tsne_Users_Foresight.csv**: This file is 2D vector resulted from the dimentionality reduction using t-SNE<sup>2</sup>. For example; tsne_10k_50p.csv   
     &nbsp;&nbsp;&nbsp;4. **labels_ClusterNum_Foresight_ClusteringMethod.csv**: This file contains the labels from the 2D t-SNE vector with a particular clustering algorithm. For example; labels_5_50p_em.csv (em for EM, km for k-means, hmm for HMM)  
     &nbsp;&nbsp;&nbsp;5. **contact_list_ClusterNum_Foresight_ClusteringMethod.csv**: This file contains the contact list of an instance (geo-location) of a user in a cluster from either of the three identified clustering algorithms. An example of the filename; contact_list_5_50p_em.csv  
