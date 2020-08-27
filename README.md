@@ -30,7 +30,7 @@ Details regarding the simulation settings, clustering methods, raw data, and out
   Number of clusters: 5, 6, 7, 8    
   **Other parameters**  
   For estimating the risk scores of each cluster, a t% ahead mechanism is used where an estimation of future risk of a cluster is evaluated with (1-t)% of the time commitments of each user in the MCS campaign. The t% ahead mechanism is known as the 'Foresight' in this risk study.   
-  Foresight: 20% - 50%  
+  Foresight: 20% - 50% ahead    
   20% ahead means 80% of the mobility pattern of each user. Likewise, 50% means 50% of the mobility pattern of each user.
 3. **Raw Data**:
   The raw data (mobility pattern), obtained from the simulator, contains 7 features defined by the tuple <UserID, Latitude, Longitude, Altitude, Day, Hour, Min>. The mobility pattern can be found in each of two sub-folders under 'Raw Data' folder, representing the two scenarios. Each folder is labelled by 'City-Users-Day'. Here is a snippet of the raw data.
