@@ -37,9 +37,9 @@ Details regarding the simulation settings, clustering methods, raw data, and out
 <img src="images/raw_data.png" width=800>
 
 4. **Output files**:
-  All the output files are stored in the 'Output' folder. The raw data is cleaned using Microsoft Excel, where all the null values in each cell is replaced with 0. Since 'Altitude' feature is not required to determine the geo-location of a user, it can be discarded. Following a feature selection method, 'Day' feature is also discarded. The final tuple becomes <UserID, Latitude, Longitude, Hour, Min, Sec>. Please read the 'Output_tuples.txt' in the 'Output' folder to get an explanation on each feature/column of the different data set. It is recommended to read the description of the output files first before reading the .txt file.  
+  All the output files are stored in the 'Output' folder. The raw data is cleaned using Microsoft Excel, where all the null values in each cell is replaced with 0. Since 'Altitude' feature is not required to determine the geo-location of a user, it can be discarded. Following a feature selection method, 'Day' feature is also discarded. The final tuple becomes <UserID, Latitude, Longitude, Hour, Min, Sec>. Please read the 'Output_tuples.txt' in the 'Output' folder to see what features/columns each csv file contains. It is recommended to read the description of the output files first before reading the .txt file.  
   
-    Details of the output files:  
+    Description of the output files:  
     &nbsp;&nbsp;&nbsp;1. **UserMovementListEvents_0_Users.csv**: This file is the cleaned version of the raw mobility data from the result of replacing null values and feature selection. 'Users' in the file name can be either 10000 or 30000. For example; UserMovementListEvents_0_10000.csv    
     &nbsp;&nbsp;&nbsp;2. **paris_Users_Foresight.csv**: This file contains the t% ahead mobility data following the data-processing steps. An example of the file name; paris_10k_50p.csv. Since the selected travel time is 41 mins, the t% ahead is taken from the mobility data where all the users have the same number of mobility instances.    
     &nbsp;&nbsp;&nbsp;3. **tsne_Users_Foresight.csv**: This file is 2D vector resulted from the dimentionality reduction using t-SNE<sup>2</sup>. For example; tsne_10k_50p.csv   
