@@ -1,0 +1,4 @@
+avg_dependability,no_of_communities,clustering_method,foresight
+0.9316131492648243,8,EM,20% ahead
+0.9301157712909485,8,HMM,20% ahead
+0.9024963373323828,8,KM,40% ahead
