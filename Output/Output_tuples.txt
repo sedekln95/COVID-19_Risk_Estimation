@@ -1,0 +1,81 @@
+....This file shows the features/columns in each tuple that defines the csv file(s)....
+
+1. 	UserMovementListEvents_0_Users.csv:
+	feature tuple = <UserID, Latitude, Longitude, Hour, Min, Sec>
+	
+	'UserID' is the ID of the user. 'Latitude' and 'Longitude' represents the geo-location of an instance of a 
+	user. 'Hour', 'Min', 'Sec' indicates the time for the pushed sensed sensory data which contains the geo-location.
+	
+2. 	paris_Users_Foresight.csv:
+	feature tuple = <UserID, Latitude, Longitude, Hour, Min, Sec>	
+	
+	'UserID' is the ID of the user. 'Latitude' and 'Longitude' represents the geo-location of an instance of a 
+	user. 'Hour', 'Min', 'Sec' indicates the time for the pushed sensed sensory data which contains the geo-location.
+
+3.	tsne_Users_Foresight.csv:
+	feature tuple = <tsne_2d_one, tsne_2d_two>
+	
+	'tsne_2d_one' is one of the two dimensions as a result of dimensionality reduction. Likewise, 'tsne_2d_two'
+	represents the other axis/dimension.
+	
+4. 	labels_ClusterNum_Foresight_ClusteringMethod.csv:
+	feature tuple = <label>
+	
+	'label' defines the cluster label for an instance (geo-location) of a user i
+	
+5. 	contact_list_ClusterNum_Foresight_ClusteringMethod.csv:
+	feature tuple = <contact_list>
+	
+	'contact_list' defines the contact list of an instance of user i in cluster cluster c
+
+6. cluster_riskfactor_ClusterNum_Foresight_ClusteringMethod.csv:
+	feature tuple = <risk_factor_cluster>
+	
+	'risk_factor_cluster' defines the risk factor of each M clusters. In other words, it defines the cluster 
+	risk factor.
+	
+7. risk_factor_ClusterNum_Foresight_ClusteringMethod.csv:
+	feature tuple = <UserID, label, risk_factor>
+	
+	'UserID' is the ID of a user. 'label' is the cluster label of an instance of a user having a particular ID.
+	'risk_factor' is the risk factor of that instance of user.
+	
+8.	user_count_ClusterNum_Foresight_ClusteringMethod.csv:
+	feature tuple = <user_count>
+	
+	'user_count' defines the number of users in each of the M clusters.
+	
+9.	max_risk_factor_ClusterNum_Foresight_ClusteringMethod.csv:	
+	feature tuple = <label, max_risk_factor>
+	
+	'label' is the cluster label for an instance of user i. 'max_risk_factor' 
+	defines the maximum risk factor from an instance of a user in a cluster c.  
+
+10.	std_riskfactor_ClusterNum_Foresight_ClusteringMethod.csv: 
+	feature tuple = <label, std_risk_factor>
+	
+	'std_risk_factor' is the standard deviation of all the risk factors in a particular cluster c.
+	
+11. merged_list_ins_cl_ClusterNum_Foresight_ClusteringMethod.csv: 
+	feature tuple = <UserID, Latitude, Longitude, Hour, Min, Sec, label, contact_list>
+	
+	This is a merged csv file of the mobility pattern, labels, and contact list
+	
+12.	error_values.csv:
+	feature tuple = <avg_dependability, no_of_communities, clustering_method, foresight>
+	
+	For a particular 'clustering_method', 'avg_dependability' defines the average dependability for 
+	M communities ('no_of_communities'), at t% ahead 'foresight'.
+	
+13. min_error_value.csv:
+	feature tuple = <avg_dependability, no_of_communities, clustering_method, foresight>
+	
+	The tuples has the same description as that of csv file number 12, but this file contains only the maximum
+	average dependability from all the three clustering methods (k-means, HMM, EM).
+	
+14. max_dependability_Users.csv: 
+	feature tupple = <community, risk_estimation, dependability, clustering_method, foresight>
+	
+	In a particular 'clustering_method', 'community' is the identified community whose 
+	risk estimation error ('risk_estimation') is the lowest, hence, having the highest 'dependability' 
+	at a particular 'foresight' value.
