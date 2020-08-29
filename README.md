@@ -23,7 +23,7 @@ Details regarding the simulation settings, clustering methods, raw data, and out
   Time interval of the MCS campaign (min-max): 20 - 120 mins      
   Day(s) of simulation: 1  
   Number of users: 10000 (scenario 1), 30000 (scenario 2)  
-  City: Paris (area: 105.4 km<sup>2</sup>)
+  City: Paris (area: 105.4 km<sup>2</sup>)  
   Selected travel time of each user: 41 mins (41 mins of travel time is selected from each user to define the travel distance, i.e., mobility pattern)  
   **Clustering parameters**  
   Clustering method: k-means, HMM (Hidden Markov Model), EM (Expectation Maximization)  
