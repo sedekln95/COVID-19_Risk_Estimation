@@ -1,0 +1,280 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>partition_selection &#8212; COVID-19 Risk Estimation 1.0 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for partition_selection</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">	Dependability</span>
+<span class="sd">	.............</span>
+<span class="sd">	The risk factor prediction by taking the absolute difference between the actual risk factor and predicted risk factor </span>
+<span class="sd">	(at t% ahead foresight) of clusters is defined as dependability of the prediction. </span>
+<span class="sd">	</span>
+<span class="sd">	Average dependability is the average of the absolute difference between actual-predicted risk scores of clusters.</span>
+
+<span class="sd">	Maximum dependability is the minimum absolute difference in the actual-predicted risk score of a cluster. </span>
+<span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../index.html#partition_selection.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	This function computes the average dependability for different values of M clusters (M = [5,6,7,8]) with their respective</span>
+<span class="sd">	foresight values (20%-50% ahead), and clustering algorithms.</span>
+
+<span class="sd">	Eg: Cluster M = 6, i.e., 6 clusters. Therefore for 6 clusters, we evaluate the average dependability for the 6 clusters at different </span>
+<span class="sd">	foresights in all the three clustering algorithms (HMM, k-means, EM). </span>
+
+<span class="sd">	:param name: summation of the absolute difference between the actual risk factor and predicted risk factor, number of clusters</span>
+<span class="sd">	</span>
+<span class="sd">	:param type: floating point (summation value), numpy array (num of clusters)</span>
+
+<span class="sd">	:return: the average dependability</span>
+
+<span class="sd">	:return type: dataframe</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="n">algo_select</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">&#39;EM&#39;</span><span class="p">,</span><span class="s1">&#39;em&#39;</span><span class="p">],[</span><span class="s1">&#39;HMM&#39;</span><span class="p">,</span><span class="s1">&#39;hmm&#39;</span><span class="p">],[</span><span class="s1">&#39;KM&#39;</span><span class="p">,</span><span class="s1">&#39;km&#39;</span><span class="p">]]</span>
+	<span class="n">cluster_size</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]))</span>
+	<span class="n">partition</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;50p&#39;</span><span class="p">,</span> <span class="s1">&#39;60p&#39;</span><span class="p">,</span> <span class="s1">&#39;70p&#39;</span><span class="p">,</span> <span class="s1">&#39;80p&#39;</span><span class="p">]</span>
+	<span class="n">partition_num</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(([</span><span class="s1">&#39;50</span><span class="si">% a</span><span class="s1">head&#39;</span><span class="p">,</span> <span class="s1">&#39;40</span><span class="si">% a</span><span class="s1">head&#39;</span><span class="p">,</span> <span class="s1">&#39;30</span><span class="si">% a</span><span class="s1">head&#39;</span><span class="p">,</span> <span class="s1">&#39;20</span><span class="si">% a</span><span class="s1">head&#39;</span><span class="p">]))</span>
+	<span class="n">flag</span> <span class="o">=</span> <span class="mi">0</span> 
+	<span class="n">error_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">partition</span><span class="p">),</span><span class="mi">1</span><span class="p">),</span> <span class="nb">float</span><span class="p">)</span>
+
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	The following for loop computes the average dependabililty across all foresights values, different num of clusters, and their respective clustering algo.</span>
+<span class="sd">	Please note that the file path should be changed based on where the input files are. So, &#39;file_part&#39; and &#39;file_main&#39; should be changed </span>
+<span class="sd">	accordingly to the respective file directory of input files. Similarly, the file path in &#39;df_main&#39; and &#39;df_path&#39; should also be changed.</span>
+<span class="sd">	This file path change applies to every line of code where an input file is read/imported.</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">algo_select</span><span class="p">)):</span>
+		<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cluster_size</span><span class="p">)):</span>
+			<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">partition</span><span class="p">)):</span>
+				<span class="n">file_part</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">algo_select</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;/cluster_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">cluster_size</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">partition</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">algo_select</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;/cluster_riskfactor_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">cluster_size</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">partition</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">algo_select</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+				<span class="n">file_main</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">algo_select</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;/cluster_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">cluster_size</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;_100p_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">algo_select</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;/cluster_riskfactor_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">cluster_size</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;_100p_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">algo_select</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+				<span class="n">df_part</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;/content/drive/My Drive/Paris_dataset/&#39;</span> <span class="o">+</span> <span class="n">file_part</span> <span class="o">+</span> <span class="s1">&#39;.csv&#39;</span><span class="p">)</span>
+				<span class="n">df_main</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;/content/drive/My Drive/Paris_dataset/&#39;</span> <span class="o">+</span> <span class="n">file_main</span> <span class="o">+</span> <span class="s1">&#39;.csv&#39;</span><span class="p">)</span>
+				<span class="n">diff_list</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">df_part</span><span class="p">[</span><span class="s1">&#39;risk_factor_cluster&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">df_main</span><span class="p">[</span><span class="s1">&#39;risk_factor_cluster&#39;</span><span class="p">])</span>
+				<span class="n">sum_diff</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">diff_list</span><span class="p">)</span>
+				<span class="n">error_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">sum_diff</span><span class="o">/</span><span class="n">cluster_size</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+			<span class="n">algo_name</span> <span class="o">=</span> <span class="p">[[</span><span class="n">algo_select</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span><span class="o">*</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">partition</span><span class="p">)</span>
+			<span class="n">cluster</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">cluster_size</span><span class="p">[</span><span class="n">j</span><span class="p">]]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">partition</span><span class="p">))</span>
+			<span class="k">if</span> <span class="n">flag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+				<span class="n">df_error</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">([</span><span class="n">error_list</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">cluster</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">algo_name</span><span class="p">,</span> <span class="n">partition_num</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)]),</span> <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+				<span class="n">df_error</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;avg_dependability&#39;</span><span class="p">,</span> <span class="s1">&#39;no_of_communities&#39;</span><span class="p">,</span> <span class="s1">&#39;clustering_method&#39;</span><span class="p">,</span> <span class="s1">&#39;foresight&#39;</span><span class="p">]</span>
+				<span class="n">flag</span> <span class="o">=</span> <span class="mi">1</span>
+				<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error dataframe created</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">df_concat</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">([</span><span class="n">error_list</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">cluster</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">algo_name</span><span class="p">,</span> <span class="n">partition_num</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)]),</span> <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+				<span class="n">df_concat</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;avg_dependability&#39;</span><span class="p">,</span> <span class="s1">&#39;no_of_communities&#39;</span><span class="p">,</span> <span class="s1">&#39;clustering_method&#39;</span><span class="p">,</span> <span class="s1">&#39;foresight&#39;</span><span class="p">]</span>
+				<span class="n">df_error</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">((</span><span class="n">df_error</span><span class="p">,</span><span class="n">df_concat</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+				<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error dataframe concatenated</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+	<span class="n">df_error</span><span class="p">[[</span><span class="s1">&#39;avg_dependability&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">df_error</span><span class="p">[[</span><span class="s1">&#39;avg_dependability&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float&#39;</span><span class="p">)</span>
+	<span class="n">df_error</span><span class="p">[[</span><span class="s1">&#39;no_of_communities&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">df_error</span><span class="p">[[</span><span class="s1">&#39;no_of_communities&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+
+	<span class="c1">#Scaling the average dependability between 0 and 1</span>
+	<span class="n">df_error</span><span class="p">[</span><span class="s1">&#39;avg_dependability&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">df_error</span><span class="p">[</span><span class="s1">&#39;avg_dependability&#39;</span><span class="p">])</span>
+
+	<span class="k">return</span> <span class="n">df_error</span></div>
+
+<div class="viewcode-block" id="maxAvgDependability"><a class="viewcode-back" href="../index.html#partition_selection.maxAvgDependability">[docs]</a><span class="k">def</span> <span class="nf">maxAvgDependability</span><span class="p">(</span><span class="n">df_error</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	This function gives the maximum average dependability at a particular foresight value with M communities in their respective clustering methods, </span>
+<span class="sd">	namely, Hidden Markov Model, k-means, and Expectation Maximization.</span>
+
+<span class="sd">	:param name: average dependability</span>
+
+<span class="sd">	:param type: dataframe</span>
+
+<span class="sd">	:return: maximum average dependabilty in all the three clustering methods</span>
+
+<span class="sd">	:return type: dataframe</span>
+<span class="sd">	&#39;&#39;&#39;</span>	
+	<span class="n">max_list</span> <span class="o">=</span> <span class="n">df_error</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;clustering_method&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">avg_dependability</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+	<span class="n">max_list_arr</span> <span class="o">=</span> <span class="n">min_list</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+	<span class="c1">#min_list_arr =(1 - min_list_arr[:])</span>
+
+	<span class="n">df_max</span> <span class="o">=</span> <span class="n">df_error</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_error</span><span class="p">[</span><span class="s1">&#39;avg_dependability&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">max_list_arr</span><span class="p">)]</span>
+
+	<span class="k">return</span> <span class="n">df_max</span></div>
+
+<div class="viewcode-block" id="maxDependability"><a class="viewcode-back" href="../index.html#partition_selection.maxDependability">[docs]</a><span class="k">def</span> <span class="nf">maxDependability</span><span class="p">(</span><span class="n">df_max_avg_dependability</span><span class="p">):</span>
+	
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	This function retrieves the maximum dependability from a particular community at a specific foresight value, whose average with other</span>
+<span class="sd">	communities at the same foresight is the global maximum average dependability.</span>
+
+<span class="sd">	:param name: maximum average dependability  </span>
+<span class="sd">	</span>
+<span class="sd">	:param type: dataframe</span>
+
+<span class="sd">	:return: maximum dependability at t% ahead foresight for community/cluster c</span>
+
+<span class="sd">	:return type:	dataframe</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+
+	<span class="c1">#Getting the maximum average dependabilty</span>
+	<span class="n">df_max_dep</span> <span class="o">=</span> <span class="n">df_max_avg_dependability</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_max_avg_dependability</span><span class="p">[</span><span class="s1">&#39;avg_dependability&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">df_max_avg_dependability</span><span class="p">[</span><span class="s1">&#39;avg_dependability&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()]</span>
+	<span class="n">df_max_dep</span> <span class="o">=</span> <span class="n">df_max_dep</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	<span class="n">dep_arr</span> <span class="o">=</span> <span class="n">df_max_dep</span><span class="o">.</span><span class="n">values</span>
+
+
+	<span class="n">comm</span> <span class="o">=</span> <span class="n">df_max_dep</span><span class="o">.</span><span class="n">no_of_communities</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+	<span class="n">clust_method</span> <span class="o">=</span> <span class="n">df_max_dep</span><span class="o">.</span><span class="n">clustering_method</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+	<span class="n">clustU</span> <span class="o">=</span> <span class="n">clust_method</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+	<span class="n">fores</span> <span class="o">=</span> <span class="n">df_max_dep</span><span class="o">.</span><span class="n">foresight</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+	<span class="n">foresight</span> <span class="o">=</span> <span class="n">fores</span>
+
+	<span class="n">fores</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">fores</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
+	<span class="n">fores</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">fores</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;p&#39;</span>
+
+	<span class="sd">&#39;&#39;&#39;Getting the file path of actual-predicted risk factor based on identifying the clustering method which has the </span>
+<span class="sd">	maximum avg dependability.&#39;&#39;&#39;</span>
+	<span class="n">file_part</span> <span class="o">=</span> <span class="n">clustU</span> <span class="o">+</span> <span class="s1">&#39;/cluster_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">comm</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">fores</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">clust_method</span> <span class="o">+</span> <span class="s1">&#39;/cluster_riskfactor_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">comm</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">fores</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">clust_method</span>
+	<span class="n">file_main</span> <span class="o">=</span> <span class="n">clustU</span> <span class="o">+</span> <span class="s1">&#39;/cluster_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">comm</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="s1">&#39;100p&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">clust_method</span> <span class="o">+</span> <span class="s1">&#39;/cluster_riskfactor_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">comm</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="s1">&#39;100p&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">clust_method</span>
+
+	<span class="c1">#Reading/importing the csv files</span>
+	<span class="n">df_part</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;/content/drive/My Drive/Paris_dataset/&#39;</span> <span class="o">+</span> <span class="n">file_part</span> <span class="o">+</span> <span class="s1">&#39;.csv&#39;</span><span class="p">)</span>
+	<span class="n">df_main</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;/content/drive/My Drive/Paris_dataset/&#39;</span> <span class="o">+</span> <span class="n">file_main</span> <span class="o">+</span> <span class="s1">&#39;.csv&#39;</span><span class="p">)</span>
+
+	<span class="c1">#Minimum risk estimation error</span>
+	<span class="n">abs_diff</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">df_part</span><span class="o">.</span><span class="n">risk_factor_cluster</span><span class="o">-</span><span class="n">df_main</span><span class="o">.</span><span class="n">risk_factor_cluster</span><span class="p">))</span>
+
+	<span class="c1">#row indices</span>
+	<span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">comm</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+
+	<span class="c1">#Getting the risk estimation error for the m communities from the identified clustering method with the max avg dependability</span>
+	<span class="n">error</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">df_part</span><span class="o">.</span><span class="n">risk_factor_cluster</span><span class="o">-</span><span class="n">df_main</span><span class="o">.</span><span class="n">risk_factor_cluster</span><span class="p">)</span>
+	<span class="n">error</span> <span class="o">=</span> <span class="n">error</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+	<span class="n">error</span> <span class="o">=</span> <span class="n">error</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+	<span class="c1">#Creating the dataframe</span>
+	<span class="n">df_diff</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">error</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;risk_estimation&#39;</span><span class="p">])</span>
+	<span class="n">df_diff</span> <span class="o">=</span> <span class="n">df_diff</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+	<span class="n">df_diff</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;community&#39;</span><span class="p">,</span> <span class="s1">&#39;risk_estimation&#39;</span><span class="p">]</span>
+
+	<span class="n">df_max</span> <span class="o">=</span> <span class="n">df_diff</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_diff</span><span class="o">.</span><span class="n">risk_estimation</span> <span class="o">==</span> <span class="n">abs_diff</span><span class="p">]</span>
+	<span class="n">df_max</span>  <span class="o">=</span> <span class="n">df_max</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+	<span class="c1">#Scaling the dependability value to 0 - 1</span>
+	<span class="n">max_dep</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">df_max</span><span class="o">.</span><span class="n">risk_estimation</span>
+
+
+	<span class="n">df_max</span><span class="p">[</span><span class="s1">&#39;dependability&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_dep</span>
+	<span class="n">df_max</span><span class="p">[</span><span class="s1">&#39;clustering method&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">clustU</span>
+	<span class="n">df_max</span><span class="p">[</span><span class="s1">&#39;foresight&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">foresight</span>
+
+	<span class="k">return</span> <span class="n">df_max</span></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>  
+	<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+	<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+	
+	<span class="sd">&#39;&#39;&#39;Define the main function which will compute the risk estimation error for between the actual and predicted risk factors</span>
+<span class="sd">	at different communities.&#39;&#39;&#39;</span>
+	<span class="n">df_error</span> <span class="o">=</span> <span class="n">main</span><span class="p">()</span>
+
+	<span class="c1">#Export the dataframe as a csv file</span>
+	<span class="n">df_error</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;./Output/error_values.csv&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+	<span class="sd">&#39;&#39;&#39;Call the functin maxAvgDependability which gives the maximum average dependability from the identified clustering methods at a </span>
+<span class="sd">	particular foresight with M communities/clusters&#39;&#39;&#39;</span>
+	<span class="n">df_max_avg_dependability</span> <span class="o">=</span> <span class="n">maxAvgDependability</span><span class="p">(</span><span class="n">df_error</span><span class="p">)</span>
+
+	<span class="c1">#Export the dataframe as a csv file</span>
+	<span class="n">df_max_avg_dependability</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;./Output/min_error_values.csv&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+	<span class="c1">#Calculate the maximum dependability from the maximum average dependability </span>
+	<span class="n">df_max_depependability</span>  <span class="o">=</span> <span class="n">maxDependability</span><span class="p">(</span><span class="n">df_max_avg_dependability</span><span class="p">)</span>
+
+	<span class="c1">#Export the dataframe as a csv file</span>
+	<span class="n">df_max_depependability</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;./Output/max_dependability.csv&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">COVID-19 Risk Estimation</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Sedevizo.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

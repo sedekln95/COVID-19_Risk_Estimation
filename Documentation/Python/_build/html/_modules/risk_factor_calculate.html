@@ -1,0 +1,351 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>risk_factor_calculate &#8212; COVID-19 Risk Estimation 1.0 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for risk_factor_calculate</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Community Risk Factor</span>
+<span class="sd">	.....................</span>
+<span class="sd">	This python code calculates the community risk factor based on the individuals&#39; risk scores in each community. </span>
+<span class="sd">	Community is defined as the different spatio-temporal instances of unique users that are clustered based on the </span>
+<span class="sd">	projected future movements of these participants. Community and cluster are used interchangeably.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="summationUser"><a class="viewcode-back" href="../index.html#risk_factor_calculate.summationUser">[docs]</a><span class="k">def</span> <span class="nf">summationUser</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	This function takes the summation of all the contact list of unique users based on their ID&#39;s and cluster labels.</span>
+<span class="sd">	Eg: User ID = 1 belongs to cluster label = 5, and this user has 10 instances in that cluster. The function will take the summation of the contact </span>
+<span class="sd">	list for all the 10 instances of user ID  = 1 in cluster 5.</span>
+
+<span class="sd">	:param name: mobility data and their corresponding cluster labels</span>
+
+<span class="sd">	:param type: dataframe</span>
+
+<span class="sd">	:returns: the summation of contact list of every instance of user i in cluster c</span>
+
+<span class="sd">	:return type: numpy array </span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="n">sumSeries</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;UserID&#39;</span><span class="p">,</span><span class="s1">&#39;label&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">contact_list</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+	<span class="n">df_new</span> <span class="o">=</span> <span class="n">sumSeries</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s1">&#39;contact_list_summation&#39;</span><span class="p">)</span>
+	<span class="n">df_new</span> <span class="o">=</span> <span class="n">df_new</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+	<span class="n">arrSum</span> <span class="o">=</span> <span class="n">df_new</span><span class="o">.</span><span class="n">values</span>
+	<span class="k">return</span> <span class="n">arrSum</span></div>
+
+<div class="viewcode-block" id="globalMax"><a class="viewcode-back" href="../index.html#risk_factor_calculate.globalMax">[docs]</a><span class="k">def</span> <span class="nf">globalMax</span><span class="p">(</span><span class="n">arrSum</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	This function gives the maximum summation value of contact list across all unique users.</span>
+<span class="sd">	</span>
+<span class="sd">	:param name: summation of contact list of all users across M clusters</span>
+
+<span class="sd">	:param type: numpy array</span>
+
+<span class="sd">	:return: the maximum summation value of contact list from an instance of user i across the N users</span>
+
+<span class="sd">	:return type: integer</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">arrSum</span><span class="p">[:,</span><span class="mi">2</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="riskFactorUser"><a class="viewcode-back" href="../index.html#risk_factor_calculate.riskFactorUser">[docs]</a><span class="k">def</span> <span class="nf">riskFactorUser</span><span class="p">(</span><span class="n">arrSum</span><span class="p">,</span> <span class="n">global_max</span><span class="p">,</span> <span class="n">riskList</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	This function computes the risk factor of each instance of a user in cluster c.</span>
+
+<span class="sd">	:param name: summation of contact list of all users across M clusters, maximum summation value of contact list across all users</span>
+
+<span class="sd">	:param type: numpy array (summation), integer (maximum summation value) </span>
+
+<span class="sd">	:return: risk factor of all users in clusters c</span>
+<span class="sd">			 </span>
+<span class="sd">	:return type: numpy array </span>
+
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">riskList</span><span class="p">)):</span>
+		<span class="n">riskList</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">arrSum</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+		<span class="n">riskList</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">arrSum</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+		<span class="n">riskList</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">arrSum</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span><span class="o">/</span><span class="n">global_max</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="riskListDataframe"><a class="viewcode-back" href="../index.html#risk_factor_calculate.riskListDataframe">[docs]</a><span class="k">def</span> <span class="nf">riskListDataframe</span><span class="p">(</span><span class="n">riskList</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	This function creates a dataframe for the risk factor of users.</span>
+<span class="sd">	</span>
+<span class="sd">	:param name: risk factor of users</span>
+
+<span class="sd">	:param type: numpy array</span>
+
+<span class="sd">	:return: risk factor of users in a dataframe</span>
+
+<span class="sd">	:return type: dataframe</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">riskList</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;UserID&#39;</span><span class="p">,</span><span class="s1">&#39;label&#39;</span><span class="p">,</span><span class="s1">&#39;risk_factor&#39;</span><span class="p">])</span>
+	<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">astype</span><span class="p">({</span><span class="s1">&#39;UserID&#39;</span> <span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span> <span class="p">:</span> <span class="nb">int</span><span class="p">})</span>
+	<span class="k">return</span> <span class="n">df</span></div>
+
+<div class="viewcode-block" id="maxRiskFactor"><a class="viewcode-back" href="../index.html#risk_factor_calculate.maxRiskFactor">[docs]</a><span class="k">def</span> <span class="nf">maxRiskFactor</span><span class="p">(</span><span class="n">df_risk</span><span class="p">):</span>
+
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	This function gets the maximum risk factor of a user across all clusters.</span>
+
+<span class="sd">	:param name: risk factor of users</span>
+
+<span class="sd">	:param type: dataframe</span>
+
+<span class="sd">	:return: the maximum risk factor of an instance of a user across all the M clusters</span>
+
+<span class="sd">	:return: numpy array</span>
+
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="n">maxSeries</span> <span class="o">=</span> <span class="n">df_risk</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;label&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">risk_factor</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+	<span class="n">df_new</span> <span class="o">=</span> <span class="n">maxSeries</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s1">&#39;max_risk_factor&#39;</span><span class="p">)</span>
+	<span class="n">df_new</span> <span class="o">=</span> <span class="n">df_new</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+	<span class="n">arrMax</span> <span class="o">=</span> <span class="n">df_new</span><span class="o">.</span><span class="n">values</span>
+	<span class="k">return</span> <span class="n">arrMax</span></div>
+
+<div class="viewcode-block" id="standardDeviation"><a class="viewcode-back" href="../index.html#risk_factor_calculate.standardDeviation">[docs]</a><span class="k">def</span> <span class="nf">standardDeviation</span><span class="p">(</span><span class="n">df_risk</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	This function computes the standard deviation of risk factors in M clusters.</span>
+
+<span class="sd">	:param name: risk factor of users</span>
+
+<span class="sd">	:param type: dataframe</span>
+
+<span class="sd">	:return: standard deviation of risk factors in M clusters</span>
+
+<span class="sd">	:return type: numpy array</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="n">stand_devList</span> <span class="o">=</span> <span class="n">df_risk</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;label&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">risk_factor</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+	<span class="n">df_new</span> <span class="o">=</span> <span class="n">stand_devList</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s1">&#39;standard_deviation_risk_factor&#39;</span><span class="p">)</span>
+	<span class="n">df_new</span> <span class="o">=</span> <span class="n">df_new</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+	<span class="n">arrstd</span> <span class="o">=</span> <span class="n">df_new</span><span class="o">.</span><span class="n">values</span>
+	<span class="k">return</span> <span class="n">arrstd</span></div>
+
+<div class="viewcode-block" id="riskFactorCluster"><a class="viewcode-back" href="../index.html#risk_factor_calculate.riskFactorCluster">[docs]</a><span class="k">def</span> <span class="nf">riskFactorCluster</span><span class="p">(</span><span class="n">user_count</span><span class="p">,</span> <span class="n">df_risk</span><span class="p">,</span> <span class="n">n_cluster</span><span class="p">):</span>  
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	This function computes the cluster risk factor which is the summation of the risk factors of all users in cluster c and divided by the number of </span>
+<span class="sd">	unique users in that cluster. Please do not be confused with the notations &#39;risk factor of a cluster&#39; and &#39;risk factor of user&#39;. </span>
+
+<span class="sd">	:param name: number of unique users in cluster c, risk factor of users in cluster c, number of clusters</span>
+
+<span class="sd">	:param type: integer (user count, number of clusters), dataframe (users&#39; risk factor)</span>
+
+<span class="sd">	:return: the risk factor of each cluster</span>
+
+<span class="sd">	:return type: numpy array</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="n">rf_cluster</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_cluster</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span><span class="nb">float</span><span class="p">)</span>
+	<span class="n">rf_sumlist</span> <span class="o">=</span> <span class="n">df_risk</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;label&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">risk_factor</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+	<span class="n">df_new</span> <span class="o">=</span> <span class="n">rf_sumlist</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s1">&#39;risk_factor_summation&#39;</span><span class="p">)</span>
+	<span class="n">df_new</span> <span class="o">=</span> <span class="n">df_new</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+	<span class="n">arrSum</span> <span class="o">=</span> <span class="n">df_new</span><span class="o">.</span><span class="n">values</span>
+	<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The length of risk factor summation is&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">arrSum</span><span class="p">))</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_cluster</span><span class="p">):</span>
+		<span class="n">rf_cluster</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">arrSum</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">user_count</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+		<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;risk factor of cluster&#39;</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span><span class="s1">&#39;is&#39;</span><span class="p">,</span><span class="n">rf_cluster</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+		<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;summation of risk factors in cluster&#39;</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;is&#39;</span><span class="p">,</span><span class="n">arrSum</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+		<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;user count is&#39;</span><span class="p">,</span> <span class="n">user_count</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+	<span class="k">return</span> <span class="n">rf_cluster</span></div>
+
+<div class="viewcode-block" id="max_riskFactor_dataframe"><a class="viewcode-back" href="../index.html#risk_factor_calculate.max_riskFactor_dataframe">[docs]</a><span class="k">def</span> <span class="nf">max_riskFactor_dataframe</span><span class="p">(</span><span class="n">max_rf_kcluster</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	This function creates a dataframe for the maximum risk factor in each cluster. </span>
+<span class="sd">	</span>
+<span class="sd">	:param name: maximum risk factor of a user in all clusters</span>
+
+<span class="sd">	:param type: numpy array</span>
+
+<span class="sd">	:return: dataframe format of maximum risk factor of a user in all clusters</span>
+
+<span class="sd">	:return type: dataframe</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">max_rf_kcluster</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">,</span><span class="s1">&#39;max_risk_factor&#39;</span><span class="p">])</span>
+	<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">astype</span><span class="p">({</span><span class="s1">&#39;label&#39;</span> <span class="p">:</span> <span class="nb">int</span><span class="p">})</span>
+	<span class="k">return</span> <span class="n">df</span></div>
+
+<div class="viewcode-block" id="std_dataframe"><a class="viewcode-back" href="../index.html#risk_factor_calculate.std_dataframe">[docs]</a><span class="k">def</span> <span class="nf">std_dataframe</span><span class="p">(</span><span class="n">std_arr_cluster</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	This function creates a dataframe for the standard deviation of the risk factors of user in each cluster.</span>
+
+<span class="sd">	:param name: standard deviation of users in each cluster</span>
+
+<span class="sd">	:param type: dataframe</span>
+
+<span class="sd">	:return: dataframe format of the standard deviation</span>
+
+<span class="sd">	:return type: dataframe</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">std_arr_cluster</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">,</span><span class="s1">&#39;std_risk_factor&#39;</span><span class="p">])</span>
+	<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">astype</span><span class="p">({</span><span class="s1">&#39;label&#39;</span> <span class="p">:</span> <span class="nb">int</span><span class="p">})</span>
+	<span class="k">return</span> <span class="n">df</span></div>
+
+<div class="viewcode-block" id="rf_cluster_dataframe"><a class="viewcode-back" href="../index.html#risk_factor_calculate.rf_cluster_dataframe">[docs]</a><span class="k">def</span> <span class="nf">rf_cluster_dataframe</span><span class="p">(</span><span class="n">rf_cluster</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	This function creates a dataframe for the risk factor of clusters (i.e., cluster risk factor).</span>
+
+<span class="sd">	:param name: M cluster risk factor</span>
+
+<span class="sd">	:param type: numpy array</span>
+
+<span class="sd">	:return: dataframe format of the cluster risk factor</span>
+
+<span class="sd">	:return type: dataframe</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rf_cluster</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;risk_factor_cluster&#39;</span><span class="p">])</span>
+	<span class="k">return</span> <span class="n">df</span></div>
+
+<div class="viewcode-block" id="df_to_csv"><a class="viewcode-back" href="../index.html#risk_factor_calculate.df_to_csv">[docs]</a><span class="k">def</span> <span class="nf">df_to_csv</span><span class="p">(</span><span class="n">df_risk</span><span class="p">,</span> <span class="n">df_max_rf</span><span class="p">,</span> <span class="n">df_std</span><span class="p">,</span> <span class="n">df_cluster_rf</span><span class="p">):</span>
+
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	This function exports the dataframe format of users&#39; risk factor, maximum risk factor across all clusters, standard deviation of risk</span>
+<span class="sd">	factor in each cluster, clusters&#39; risk factor to csv files</span>
+
+<span class="sd">	:param name: users&#39; risk factor, max risk factor in each cluster, standard deviation of risk factors in each cluster, clusters&#39; risk factor</span>
+
+<span class="sd">	:param type: dataframe (for all the parameters)</span>
+
+<span class="sd">	:return: equivalent csv files for the dataframe passed in the argument</span>
+
+<span class="sd">	:return type: csv</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+	<span class="n">df_risk</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;./Output/risk_factor_8_100p_km.csv&#39;</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+	<span class="n">df_max_rf</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;./Output/max_risk_factor_8_100p_km.csv&#39;</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+	<span class="n">df_std</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;./Output/std_riskfactor_8_100p_km.csv&#39;</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+	<span class="n">df_cluster_rf</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;./Output/cluster_riskfactor_8_100p_km.csv&#39;</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+	<span class="kn">import</span> <span class="nn">time</span> 
+	<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+	<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+  
+	<span class="c1">#Define the start time of the execution</span>
+	<span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+	<span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+
+	<span class="c1">#Import the csv file that contains the geo-location and contact list of every instance of a user</span>
+	<span class="n">df_ins</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;./Output/merged_list_ins_cl_8_100p_km.csv&#39;</span><span class="p">)</span>
+
+	<span class="sd">&#39;&#39;&#39;Sort the data set in the ascending order of cluster labels. </span>
+<span class="sd">	This is to group all the instances belonging to the same cluster after each consecutive row&#39;&#39;&#39;</span>
+	<span class="n">df_res</span> <span class="o">=</span> <span class="n">df_ins</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">],</span><span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+	<span class="c1">#Read the number of unqiue users for each cluster</span>
+	<span class="n">df_usercount</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;./Output/user_count_8_100p_km.csv&#39;</span><span class="p">)</span>
+
+	<span class="n">user_count</span> <span class="o">=</span> <span class="n">df_usercount</span><span class="o">.</span><span class="n">values</span>
+	<span class="n">user_count</span> <span class="o">=</span> <span class="n">user_count</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+	<span class="c1">#Calling the functions to compute the risk factor of clusters</span>
+	<span class="n">arrSum</span> <span class="o">=</span> <span class="n">summationUser</span><span class="p">(</span><span class="n">df_res</span><span class="p">)</span>
+	<span class="n">globalmax_rf</span> <span class="o">=</span> <span class="n">globalMax</span><span class="p">(</span><span class="n">arrSum</span><span class="p">)</span>
+	<span class="n">riskList</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">arrSum</span><span class="p">),</span><span class="mi">3</span><span class="p">),</span> <span class="nb">float</span><span class="p">)</span>
+	<span class="n">riskFactorUser</span><span class="p">(</span><span class="n">arrSum</span><span class="p">,</span> <span class="n">globalmax_rf</span><span class="p">,</span> <span class="n">riskList</span><span class="p">)</span>
+	<span class="n">risklist_df</span> <span class="o">=</span> <span class="n">riskListDataframe</span><span class="p">(</span><span class="n">riskList</span><span class="p">)</span>
+
+	<span class="sd">&#39;&#39;&#39;Creating array for statistical comparisons&#39;&#39;&#39;</span>
+	<span class="n">max_rf_kcluster</span> <span class="o">=</span> <span class="n">maxRiskFactor</span><span class="p">(</span><span class="n">risklist_df</span><span class="p">)</span>
+	<span class="n">std_arr_cluster</span> <span class="o">=</span> <span class="n">standardDeviation</span><span class="p">(</span><span class="n">risklist_df</span><span class="p">)</span>
+
+	<span class="sd">&#39;&#39;&#39;Dont forget to change the label array with each execution&#39;&#39;&#39;</span>
+	
+	<span class="n">rf_cluster</span> <span class="o">=</span> <span class="n">riskFactorCluster</span><span class="p">(</span><span class="n">user_count</span><span class="p">,</span> <span class="n">risklist_df</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+
+	<span class="sd">&#39;&#39;&#39;Creating dataframe for the last three values&#39;&#39;&#39;</span>
+	<span class="n">df_max_rf</span> <span class="o">=</span> <span class="n">max_riskFactor_dataframe</span><span class="p">(</span><span class="n">max_rf_kcluster</span><span class="p">)</span>
+	<span class="n">df_std</span> <span class="o">=</span> <span class="n">std_dataframe</span><span class="p">(</span><span class="n">std_arr_cluster</span><span class="p">)</span>
+	<span class="n">df_cluster_rf</span> <span class="o">=</span> <span class="n">rf_cluster_dataframe</span><span class="p">(</span><span class="n">rf_cluster</span><span class="p">)</span>
+
+	<span class="sd">&#39;&#39;&#39;Saving all the dataframe to respective locations&#39;&#39;&#39;</span>
+	<span class="n">df_to_csv</span><span class="p">(</span><span class="n">risklist_df</span><span class="p">,</span> <span class="n">df_max_rf</span><span class="p">,</span> <span class="n">df_std</span><span class="p">,</span> <span class="n">df_cluster_rf</span><span class="p">)</span>
+
+	<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The length of risk factors of clusters is&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_cluster_rf</span><span class="p">),</span> <span class="s1">&#39;and the instances were&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_ins</span><span class="p">))</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">COVID-19 Risk Estimation</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Sedevizo.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
