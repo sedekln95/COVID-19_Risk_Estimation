@@ -103,8 +103,8 @@ def num_user(user):
 def haversine(sin_lat1, sin_lat2, cos_lat1, cos_lat2, cos_lon1, cos_lon2, sin_lon1, sin_lon2, R):
 	"""
 	This function calculates the haversine distance between an instance of a user to every other instances of other users belonging to the same cluster. 
-	The haversine distance is a modified version of the original formula and the explanation to the modification can be found by clicking on this 
-	link in the github repo: Present the link here
+	The haversine distance is a modified version of the original formula and the explanation to the modification can be found in 'Haversine distance.docx' under 'Docs' 
+	folder of the repo.
 
 	The geo-coordinates are coverted to radians before calculating the distance.
 	
