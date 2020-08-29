@@ -1,0 +1,732 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to COVID-19 Risk Estimation’s documentation! &#8212; COVID-19 Risk Estimation 1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="welcome-to-covid-19-risk-estimation-s-documentation">
+<h1>Welcome to COVID-19 Risk Estimation’s documentation!<a class="headerlink" href="#welcome-to-covid-19-risk-estimation-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>All the highlighted parameters for each function of the python code(s) describes the argument(s) that has been passed to the function(s), and
+the local variables in the function(s).</p>
+<span class="target" id="module-feature_selection"></span><div class="section" id="feature-selection">
+<h2>Feature Selection<a class="headerlink" href="#feature-selection" title="Permalink to this headline">¶</a></h2>
+<p>This python code computes the correlation matrix of our raw data to reduce the number of features.</p>
+<p>Reference: <a class="reference external" href="https://medium.com/analytics-vidhya/feature-selection-techniques-2614b3b7efcd">https://medium.com/analytics-vidhya/feature-selection-techniques-2614b3b7efcd</a></p>
+<dl class="py function">
+<dt id="feature_selection.feature_selection">
+<code class="sig-prename descclassname">feature_selection.</code><code class="sig-name descname">feature_selection</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataframe</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feature_selection.html#feature_selection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#feature_selection.feature_selection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read mobility pattern’s csv file and define the coorelation matrix. From the matrix, plot a heatmap and 
+remove the least coorelated feature.</p>
+<p>Heat map interpretation: <a class="reference external" href="https://stats.stackexchange.com/questions/392517/how-can-one-interpret-a-heat-map-plot">https://stats.stackexchange.com/questions/392517/how-can-one-interpret-a-heat-map-plot</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – mobiltiy pattern, coorelation matrix, coorelation heatmap</p></li>
+<li><p><strong>type</strong> – dataframe (mobility pattern, coorelation matrix), figure (coorelation heatmap)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>returns the mobility data with reduced features, as a result of analysing the coorelation matrix and heatmap</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dataframe</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<span class="target" id="module-instance_equal_length"></span><div class="section" id="mobility-pattern-observation-time">
+<h2>Mobility Pattern Observation Time<a class="headerlink" href="#mobility-pattern-observation-time" title="Permalink to this headline">¶</a></h2>
+<p>This python code tracks the maximum number of mobility instances/maximum travel time across all users and adds the last instance (geo-location) for n times to any user 
+whose travel time is less than the maximum travel time. Ex: user ID = 1 has 6 mobility instances, and user ID = 11 happens to have the highest travel time, i.e., 14 mobility instances.
+So, the last instance of user ID = 1 is added 5 times to its mobility list. Hence, user ID = 1 now has 11 mobility instances.</p>
+<p>The goal is to make all the users have the same number of mobility instances.</p>
+<dl class="py function">
+<dt id="instance_equal_length.instance_equal">
+<code class="sig-prename descclassname">instance_equal_length.</code><code class="sig-name descname">instance_equal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataframe</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instance_equal_length.html#instance_equal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#instance_equal_length.instance_equal" title="Permalink to this definition">¶</a></dt>
+<dd><p>This functions performs adding the last instance of any user n-times into their mobility list whose travel time is less than the maximum travel time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – mobility pattern, users’s instance frequency, user ID’s</p></li>
+<li><p><strong>type</strong> – dataframe (mobility pattern), numpy array (users’s ins freq, user ID’s)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Equal length mobility instances of all users</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dataframe</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<span class="target" id="module-foresight_fast"></span><div class="section" id="foresight-partitioning">
+<h2>Foresight/Partitioning<a class="headerlink" href="#foresight-partitioning" title="Permalink to this headline">¶</a></h2>
+<p>This python code applies different foresight values to the mobility data: 20% - 50% ahead.
+Ex: 20% ahead (80% of the mobility pattern of each user)</p>
+<dl class="py function">
+<dt id="foresight_fast.foresight">
+<code class="sig-prename descclassname">foresight_fast.</code><code class="sig-name descname">foresight</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataframe</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/foresight_fast.html#foresight"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#foresight_fast.foresight" title="Permalink to this definition">¶</a></dt>
+<dd><p>This functions performs a partition on the dataset based on a foresight value (20%-50% ahead). The resultant dataset will contain X%
+of the mobility pattern of each user.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – mobility pattern, user ID’s, users’s instance frequency</p></li>
+<li><p><strong>type</strong> – dataframe (mobility pattern, users’s ins freq), numpy array (users ID’s)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>X% of the mobility pattern of each user. In other words, the function returns a t% ahead foresight of the mobility pattern.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<span class="target" id="module-tsne"></span><div class="section" id="t-distributed-stochastic-neighbor-embedding">
+<h2>t-Distributed Stochastic Neighbor Embedding<a class="headerlink" href="#t-distributed-stochastic-neighbor-embedding" title="Permalink to this headline">¶</a></h2>
+<p>Python code for dimensionality reduction of the mobility pattern.</p>
+<dl class="py function">
+<dt id="tsne.tsne_compute">
+<code class="sig-prename descclassname">tsne.</code><code class="sig-name descname">tsne_compute</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataframe</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tsne.html#tsne_compute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tsne.tsne_compute" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function computes the t-SNE on the mobility pattern of every instance of N users. Here, N = [10000, 30000]. 
+Note that the mobility pattern can be of different foresights.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – mobility pattern, tsne result</p></li>
+<li><p><strong>type</strong> – dataframe (mobility pattern), numpy array (tsne result)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>2D vector representation of mobility data as a dataframe</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dataframe</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<span class="target" id="module-k_means"></span><div class="section" id="k-means-clustering">
+<h2>k-means Clustering<a class="headerlink" href="#k-means-clustering" title="Permalink to this headline">¶</a></h2>
+<p>This python code applies k-means algorithm to the reduced 2D vector representation of the mobility pattern. Based on the nature of the data,
+clustering is done on predicting the future mobility pattern of each user.</p>
+<p>The number of cluster is set to 5, 6, 7, 8.</p>
+<dl class="py function">
+<dt id="k_means.k_means">
+<code class="sig-prename descclassname">k_means.</code><code class="sig-name descname">k_means</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataframe</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/k_means.html#k_means"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#k_means.k_means" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs k-means clustering on the equivalent tsne data (2D vector) representation of the mobility pattern.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – tsne 2D vector of mobility data, cluster centroids, frequency of different mobility instances in all the clusters, i.e., how many instances a particular cluster has</p></li>
+<li><p><strong>type</strong> – dataframe (tsne 2D vector), numpy array (centroids, frequency)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>cluster labels</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dataframe</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<span class="target" id="module-hmm_learn"></span><div class="section" id="hidden-markov-model-hmm-clustering">
+<h2>Hidden Markov Model (HMM) Clustering<a class="headerlink" href="#hidden-markov-model-hmm-clustering" title="Permalink to this headline">¶</a></h2>
+<p>Applies HMM Clustering to the tsne 2D vector of the mobility pattern. Based on the nature of the data,
+clustering is done on predicting the future mobility pattern of each user.</p>
+<p>The number of cluster is set to 5, 6, 7, 8.</p>
+<dl class="py function">
+<dt id="hmm_learn.hmm_learn">
+<code class="sig-prename descclassname">hmm_learn.</code><code class="sig-name descname">hmm_learn</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataframe</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hmm_learn.html#hmm_learn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hmm_learn.hmm_learn" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function applies HMM clustering to the equivalent tsne 2D vector of the mobility data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – tsne 2D vector of mobility data</p></li>
+<li><p><strong>type</strong> – dataframe (tsne 2D vector)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>cluster labels</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dataframe</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<span class="target" id="module-em_clustering"></span><div class="section" id="expected-maximization-em-clustering">
+<h2>Expected Maximization (EM) Clustering<a class="headerlink" href="#expected-maximization-em-clustering" title="Permalink to this headline">¶</a></h2>
+<p>Applies EM Clustering to the tsne 2D vector of the mobility pattern. Based on the nature of the data,
+clustering is done on predicting the future mobility pattern of each user.</p>
+<p>The number of cluster is set to 5, 6, 7, 8.</p>
+<dl class="py function">
+<dt id="em_clustering.em_clust">
+<code class="sig-prename descclassname">em_clustering.</code><code class="sig-name descname">em_clust</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataframe</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/em_clustering.html#em_clust"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#em_clustering.em_clust" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs EM clustering on the equivalent tsne data (2D vector) representation of the mobility pattern.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – tsne 2D vector of mobility data, frequency of different mobility instances in all the clusters, i.e., how many instances a particular cluster has</p></li>
+<li><p><strong>type</strong> – dataframe (tsne 2D vector), numpy array (frequency)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>cluster labels</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dataframe</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<span class="target" id="module-haversine_vectorized"></span><div class="section" id="contact-list-generation">
+<h2>Contact List Generation<a class="headerlink" href="#contact-list-generation" title="Permalink to this headline">¶</a></h2>
+<p>This python code generates the contact list of every instance of a user to every other instance of other users
+based on a pre-determined distance (10 metres) around a particular instance of a user.</p>
+<dl class="py function">
+<dt id="haversine_vectorized.concatContactList">
+<code class="sig-prename descclassname">haversine_vectorized.</code><code class="sig-name descname">concatContactList</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">contact_list</span></em>, <em class="sig-param"><span class="n">df_contactList</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/haversine_vectorized.html#concatContactList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#haversine_vectorized.concatContactList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Concatenate the contact list of an instance of a user to a list of ‘contact list’ for a particular cluster label.
+Everytime a contact list is created for one particular instance of a user, we add that instance to a list of users’ instance whose 
+contact list is already being found.</p>
+<p>Note: Function is not used in the main function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – contact list of an instance of a user, concatenated contact list of instances of unique users in a cluster</p></li>
+<li><p><strong>type</strong> – numpy array (contact list), dataframe(concatenated contact list)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the contatenation of the list of contact list for different instance of users with an instance of user i in a cluster.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dataframe</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="haversine_vectorized.haversine">
+<code class="sig-prename descclassname">haversine_vectorized.</code><code class="sig-name descname">haversine</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sin_lat1</span></em>, <em class="sig-param"><span class="n">sin_lat2</span></em>, <em class="sig-param"><span class="n">cos_lat1</span></em>, <em class="sig-param"><span class="n">cos_lat2</span></em>, <em class="sig-param"><span class="n">cos_lon1</span></em>, <em class="sig-param"><span class="n">cos_lon2</span></em>, <em class="sig-param"><span class="n">sin_lon1</span></em>, <em class="sig-param"><span class="n">sin_lon2</span></em>, <em class="sig-param"><span class="n">R</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/haversine_vectorized.html#haversine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#haversine_vectorized.haversine" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function calculates the haversine distance between an instance of a user to every other instances of other users belonging to the same cluster. 
+The haversine distance is a modified version of the original formula and the explanation to the modification can be found by clicking on this 
+link in the github repo: Present the link here</p>
+<p>The geo-coordinates are coverted to radians before calculating the distance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – sine(latitude_centroid), sine(latitude_others), cosine(latitude_centroid), consine(latitude_others), sine(longitude_centroid), sine(longitude_others), cosine(longitude_centroid), consine(longitude_others), radius of the earth</p></li>
+<li><p><strong>type</strong> – radians (centroid), numpy array (others), floating point (radius of the earth)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>haversine distance</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>floating point</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="haversine_vectorized.labelSplit">
+<code class="sig-prename descclassname">haversine_vectorized.</code><code class="sig-name descname">labelSplit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span></em>, <em class="sig-param"><span class="n">label</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/haversine_vectorized.html#labelSplit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#haversine_vectorized.labelSplit" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function returns a sub-portion of the mobility data based on the cluster labels.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – merged mobility data + cluster labels , cluster label</p></li>
+<li><p><strong>type</strong> – dataframe (mobility data), integer (cluster label)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A sub-portion of the mobility data with the same cluster label</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dataframe</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="haversine_vectorized.num_user">
+<code class="sig-prename descclassname">haversine_vectorized.</code><code class="sig-name descname">num_user</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">user</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/haversine_vectorized.html#num_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#haversine_vectorized.num_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>This functions creates a dataframe for the number of unique users in a cluster.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – unique users</p></li>
+<li><p><strong>type</strong> – numpy array (unique users)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>number of unique users in a cluster</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dataframe</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="haversine_vectorized.remove_user">
+<code class="sig-prename descclassname">haversine_vectorized.</code><code class="sig-name descname">remove_user</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df_split</span></em>, <em class="sig-param"><span class="n">userID</span></em>, <em class="sig-param"><span class="n">user_index</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/haversine_vectorized.html#remove_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#haversine_vectorized.remove_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>The operation performed here is to isolate the row of an instance of a particular user id using 
+the index value from a sub-portion dataset which only has a single cluster label.</p>
+<p>Note: Function is not used in the main function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – mobility data of one cluster from M clusters, user ID, user index</p></li>
+<li><p><strong>type</strong> – dataframe (mobility data), integer (user ID, user index)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dataset with all instances of user ID passed in the argument removed, and the isolated row of an instance of a user based on the index value passed in the function argument</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dataframe (dataset), numpy array (isolated row)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="haversine_vectorized.splitArrGen">
+<code class="sig-prename descclassname">haversine_vectorized.</code><code class="sig-name descname">splitArrGen</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df_new</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/haversine_vectorized.html#splitArrGen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#haversine_vectorized.splitArrGen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the numpy array representation of the sub-portion dataset.</p>
+<p>Note: Function is not used in the main function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – mobility data of one cluster from M clusters, eg: cluster ID = 1.</p></li>
+<li><p><strong>type</strong> – dataframe</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Equivalent array representation of the dataframe passed in the argument</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<span class="target" id="module-risk_factor_calculate"></span><div class="section" id="community-risk-factor">
+<h2>Community Risk Factor<a class="headerlink" href="#community-risk-factor" title="Permalink to this headline">¶</a></h2>
+<p>This python code calculates the community risk factor based on the individuals’ risk scores in each community. 
+Community is defined as the different spatio-temporal instances of unique users that are clustered based on the 
+projected future movements of these participants. Community and cluster are used interchangeably.</p>
+<dl class="py function">
+<dt id="risk_factor_calculate.df_to_csv">
+<code class="sig-prename descclassname">risk_factor_calculate.</code><code class="sig-name descname">df_to_csv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df_risk</span></em>, <em class="sig-param"><span class="n">df_max_rf</span></em>, <em class="sig-param"><span class="n">df_std</span></em>, <em class="sig-param"><span class="n">df_cluster_rf</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/risk_factor_calculate.html#df_to_csv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#risk_factor_calculate.df_to_csv" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function exports the dataframe format of users’ risk factor, maximum risk factor across all clusters, standard deviation of risk
+factor in each cluster, clusters’ risk factor to csv files</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – users’ risk factor, max risk factor in each cluster, standard deviation of risk factors in each cluster, clusters’ risk factor</p></li>
+<li><p><strong>type</strong> – dataframe (for all the parameters)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>equivalent csv files for the dataframe passed in the argument</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>csv</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="risk_factor_calculate.globalMax">
+<code class="sig-prename descclassname">risk_factor_calculate.</code><code class="sig-name descname">globalMax</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">arrSum</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/risk_factor_calculate.html#globalMax"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#risk_factor_calculate.globalMax" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function gives the maximum summation value of contact list across all unique users.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – summation of contact list of all users across M clusters</p></li>
+<li><p><strong>type</strong> – numpy array</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the maximum summation value of contact list from an instance of user i across the N users</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>integer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="risk_factor_calculate.maxRiskFactor">
+<code class="sig-prename descclassname">risk_factor_calculate.</code><code class="sig-name descname">maxRiskFactor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df_risk</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/risk_factor_calculate.html#maxRiskFactor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#risk_factor_calculate.maxRiskFactor" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function gets the maximum risk factor of a user across all clusters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – risk factor of users</p></li>
+<li><p><strong>type</strong> – dataframe</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the maximum risk factor of an instance of a user across all the M clusters</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="risk_factor_calculate.max_riskFactor_dataframe">
+<code class="sig-prename descclassname">risk_factor_calculate.</code><code class="sig-name descname">max_riskFactor_dataframe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">max_rf_kcluster</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/risk_factor_calculate.html#max_riskFactor_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#risk_factor_calculate.max_riskFactor_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function creates a dataframe for the maximum risk factor in each cluster.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – maximum risk factor of a user in all clusters</p></li>
+<li><p><strong>type</strong> – numpy array</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dataframe format of maximum risk factor of a user in all clusters</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dataframe</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="risk_factor_calculate.rf_cluster_dataframe">
+<code class="sig-prename descclassname">risk_factor_calculate.</code><code class="sig-name descname">rf_cluster_dataframe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rf_cluster</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/risk_factor_calculate.html#rf_cluster_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#risk_factor_calculate.rf_cluster_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function creates a dataframe for the risk factor of clusters (i.e., cluster risk factor).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – M cluster risk factor</p></li>
+<li><p><strong>type</strong> – numpy array</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dataframe format of the cluster risk factor</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dataframe</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="risk_factor_calculate.riskFactorCluster">
+<code class="sig-prename descclassname">risk_factor_calculate.</code><code class="sig-name descname">riskFactorCluster</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">user_count</span></em>, <em class="sig-param"><span class="n">df_risk</span></em>, <em class="sig-param"><span class="n">n_cluster</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/risk_factor_calculate.html#riskFactorCluster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#risk_factor_calculate.riskFactorCluster" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function computes the cluster risk factor which is the summation of the risk factors of all users in cluster c and divided by the number of 
+unique users in that cluster. Please do not be confused with the notations ‘risk factor of a cluster’ and ‘risk factor of user’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – number of unique users in cluster c, risk factor of users in cluster c, number of clusters</p></li>
+<li><p><strong>type</strong> – integer (user count, number of clusters), dataframe (users’ risk factor)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the risk factor of each cluster</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="risk_factor_calculate.riskFactorUser">
+<code class="sig-prename descclassname">risk_factor_calculate.</code><code class="sig-name descname">riskFactorUser</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">arrSum</span></em>, <em class="sig-param"><span class="n">global_max</span></em>, <em class="sig-param"><span class="n">riskList</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/risk_factor_calculate.html#riskFactorUser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#risk_factor_calculate.riskFactorUser" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function computes the risk factor of each instance of a user in cluster c.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – summation of contact list of all users across M clusters, maximum summation value of contact list across all users</p></li>
+<li><p><strong>type</strong> – numpy array (summation), integer (maximum summation value)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>risk factor of all users in clusters c</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="risk_factor_calculate.riskListDataframe">
+<code class="sig-prename descclassname">risk_factor_calculate.</code><code class="sig-name descname">riskListDataframe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">riskList</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/risk_factor_calculate.html#riskListDataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#risk_factor_calculate.riskListDataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function creates a dataframe for the risk factor of users.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – risk factor of users</p></li>
+<li><p><strong>type</strong> – numpy array</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>risk factor of users in a dataframe</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dataframe</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="risk_factor_calculate.standardDeviation">
+<code class="sig-prename descclassname">risk_factor_calculate.</code><code class="sig-name descname">standardDeviation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df_risk</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/risk_factor_calculate.html#standardDeviation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#risk_factor_calculate.standardDeviation" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function computes the standard deviation of risk factors in M clusters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – risk factor of users</p></li>
+<li><p><strong>type</strong> – dataframe</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>standard deviation of risk factors in M clusters</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="risk_factor_calculate.std_dataframe">
+<code class="sig-prename descclassname">risk_factor_calculate.</code><code class="sig-name descname">std_dataframe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">std_arr_cluster</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/risk_factor_calculate.html#std_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#risk_factor_calculate.std_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function creates a dataframe for the standard deviation of the risk factors of user in each cluster.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – standard deviation of users in each cluster</p></li>
+<li><p><strong>type</strong> – dataframe</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dataframe format of the standard deviation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dataframe</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="risk_factor_calculate.summationUser">
+<code class="sig-prename descclassname">risk_factor_calculate.</code><code class="sig-name descname">summationUser</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/risk_factor_calculate.html#summationUser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#risk_factor_calculate.summationUser" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function takes the summation of all the contact list of unique users based on their ID’s and cluster labels.
+Eg: User ID = 1 belongs to cluster label = 5, and this user has 10 instances in that cluster. The function will take the summation of the contact 
+list for all the 10 instances of user ID  = 1 in cluster 5.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – mobility data and their corresponding cluster labels</p></li>
+<li><p><strong>type</strong> – dataframe</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the summation of contact list of every instance of user i in cluster c</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<span class="target" id="module-partition_selection"></span><div class="section" id="dependability">
+<h2>Dependability<a class="headerlink" href="#dependability" title="Permalink to this headline">¶</a></h2>
+<p>The risk factor prediction by taking the absolute difference between the actual risk factor and predicted risk factor 
+(at t% ahead foresight) of clusters is defined as dependability of the prediction.</p>
+<p>Average dependability is the average of the absolute difference between actual-predicted risk scores of clusters.</p>
+<p>Maximum dependability is the minimum absolute difference in the actual-predicted risk score of a cluster.</p>
+<dl class="py function">
+<dt id="partition_selection.main">
+<code class="sig-prename descclassname">partition_selection.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/partition_selection.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partition_selection.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function computes the average dependability for different values of M clusters (M = [5,6,7,8]) with their respective
+foresight values (20%-50% ahead), and clustering algorithms.</p>
+<p>Eg: Cluster M = 6, i.e., 6 clusters. Therefore for 6 clusters, we evaluate the average dependability for the 6 clusters at different 
+foresights in all the three clustering algorithms (HMM, k-means, EM).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – summation of the absolute difference between the actual risk factor and predicted risk factor, number of clusters</p></li>
+<li><p><strong>type</strong> – floating point (summation value), numpy array (num of clusters)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the average dependability</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dataframe</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="partition_selection.maxAvgDependability">
+<code class="sig-prename descclassname">partition_selection.</code><code class="sig-name descname">maxAvgDependability</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df_error</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/partition_selection.html#maxAvgDependability"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partition_selection.maxAvgDependability" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function gives the maximum average dependability at a particular foresight value with M communities in their respective clustering methods, 
+namely, Hidden Markov Model, k-means, and Expectation Maximization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – average dependability</p></li>
+<li><p><strong>type</strong> – dataframe</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>maximum average dependabilty in all the three clustering methods</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dataframe</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="partition_selection.maxDependability">
+<code class="sig-prename descclassname">partition_selection.</code><code class="sig-name descname">maxDependability</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df_max_avg_dependability</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/partition_selection.html#maxDependability"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#partition_selection.maxDependability" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function retrieves the maximum dependability from a particular community at a specific foresight value, whose average with other
+communities at the same foresight is the global maximum average dependability.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – maximum average dependability</p></li>
+<li><p><strong>type</strong> – dataframe</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>maximum dependability at t% ahead foresight for community/cluster c</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dataframe</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">COVID-19 Risk Estimation</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Sedevizo.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
