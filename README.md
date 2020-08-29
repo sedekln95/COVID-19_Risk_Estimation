@@ -5,7 +5,7 @@ To view the documentation in your system, you need to install 'Sphinx' as well a
 Details regarding the simulation settings, clustering methods, raw data, and output files of the code are given below, along with the pre-requisites that is required for this project:
 
 1. **Pre-requisites**:
-  Programming Language: The baseline programming language is Python, which is used to create all the functions regarding the proposed COVID-19 risk estimation. For plotting the   graphs, MATLAB is used. 
+  The programming language used for creating the various functions of COVID-19 risk estimation is Python. For plotting the graphs, MATLAB is used. 
   
     Python version: 3.8.4  
     MATLAB version: R2020a  
