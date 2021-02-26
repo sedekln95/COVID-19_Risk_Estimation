@@ -14,7 +14,7 @@ Details regarding the simulation settings, clustering methods, raw data, and out
     &nbsp;&nbsp;&nbsp;a. pandas  
     &nbsp;&nbsp;&nbsp;b. numpy  
     &nbsp;&nbsp;&nbsp;c. hmmlearn  
-    &nbsp;&nbsp;&nbsp;d. sklearm    
+    &nbsp;&nbsp;&nbsp;d. sklearn    
     &nbsp;&nbsp;&nbsp;e. time  
     
 2. **Simulation Settings, Clustering parameters, other parameters**:  
