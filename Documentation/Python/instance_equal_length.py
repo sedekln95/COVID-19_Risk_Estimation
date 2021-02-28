@@ -3,7 +3,7 @@
     .................................
     This python code tracks the maximum number of mobility instances/maximum travel time across all users and adds the last instance (geo-location) for n times to any user 
     whose travel time is less than the maximum travel time. Ex: user ID = 1 has 6 mobility instances, and user ID = 11 happens to have the highest travel time, i.e., 14 mobility instances.
-    So, the last instance of user ID = 1 is added 5 times to its mobility list. Hence, user ID = 1 now has 11 mobility instances.
+    So, the last instance of user ID = 1 is added 8 times to its mobility list. Hence, user ID = 1 now has 14 mobility instances.
 
     The goal is to make all the users have the same number of mobility instances.       
 """
